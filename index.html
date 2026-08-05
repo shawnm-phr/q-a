@@ -214,6 +214,13 @@
   .hide-answered-row{ display:flex; align-items:center; gap:7px; font-size:12.5px; color:var(--muted-ink); font-family:'IBM Plex Mono',monospace; }
 
   .qlist{ display:flex; flex-direction:column; gap:12px; }
+  .qlist-divider{
+    display:flex; align-items:center; gap:10px;
+    margin:10px 0 -2px; padding-top:14px; border-top:1px solid var(--line-ink);
+    font-family:'IBM Plex Mono',monospace; font-size:11.5px; letter-spacing:.1em;
+    text-transform:uppercase; color:var(--muted-ink);
+  }
+  .qlist-divider span{ opacity:.7; }
   .qcard{
     background:var(--ink-2); border:1px solid var(--line-ink); border-radius:12px;
     padding:16px 18px; animation:slideIn .28s ease;
@@ -751,6 +758,27 @@
     });
   }
 
+  function renderCard(q){
+    var badgeClass = q.category === 'peopleshr' ? 'peopleshr' : 'panelist';
+    var badgeLabel = trackLabel(q.category);
+    return '' +
+      '<div class="qcard' + (q.answered ? ' answered' : '') + '">' +
+        '<div class="qcard-top">' +
+          '<div class="qcard-meta">' +
+            '<span class="qcard-ticket">Q-' + String(q.ticket).padStart(4, '0') + '</span>' +
+            '<span>' + timeAgo(q.ts) + '</span>' +
+          '</div>' +
+          '<span class="track-badge ' + badgeClass + '">' + badgeLabel + '</span>' +
+        '</div>' +
+        '<div class="qcard-text">' + escapeHtml(q.text) + '</div>' +
+        '<div class="qcard-bottom">' +
+          '<button class="mark-btn' + (q.answered ? ' done' : '') + '" data-id="' + q.id + '">' +
+            (q.answered ? '✓ Answered' : 'Mark answered') +
+          '</button>' +
+        '</div>' +
+      '</div>';
+  }
+
   function renderQueue(){
     var items = Object.keys(qCache).map(function(k){ return qCache[k]; });
     var counts = { all: items.length, panelist: 0, peopleshr: 0 };
@@ -764,7 +792,6 @@
       if (hideAnswered && q.answered) return false;
       return true;
     });
-    filtered.sort(function(a, b){ return b.ticket - a.ticket; });
 
     if (filtered.length === 0){
       qlist.innerHTML = '';
@@ -773,26 +800,19 @@
     }
     modEmpty.style.display = 'none';
 
-    qlist.innerHTML = filtered.map(function(q){
-      var badgeClass = q.category === 'peopleshr' ? 'peopleshr' : 'panelist';
-      var badgeLabel = trackLabel(q.category);
-      return '' +
-        '<div class="qcard' + (q.answered ? ' answered' : '') + '">' +
-          '<div class="qcard-top">' +
-            '<div class="qcard-meta">' +
-              '<span class="qcard-ticket">Q-' + String(q.ticket).padStart(4, '0') + '</span>' +
-              '<span>' + timeAgo(q.ts) + '</span>' +
-            '</div>' +
-            '<span class="track-badge ' + badgeClass + '">' + badgeLabel + '</span>' +
-          '</div>' +
-          '<div class="qcard-text">' + escapeHtml(q.text) + '</div>' +
-          '<div class="qcard-bottom">' +
-            '<button class="mark-btn' + (q.answered ? ' done' : '') + '" data-id="' + q.id + '">' +
-              (q.answered ? '✓ Answered' : 'Mark answered') +
-            '</button>' +
-          '</div>' +
-        '</div>';
-    }).join('');
+    // Unanswered questions stay on top (newest first); answered ones sink
+    // into their own section at the bottom, unhighlighted via .qcard.answered.
+    var unanswered = filtered.filter(function(q){ return !q.answered; })
+      .sort(function(a, b){ return b.ticket - a.ticket; });
+    var answered = filtered.filter(function(q){ return q.answered; })
+      .sort(function(a, b){ return b.ticket - a.ticket; });
+
+    var html = unanswered.map(renderCard).join('');
+    if (answered.length){
+      html += '<div class="qlist-divider">Answered <span>(' + answered.length + ')</span></div>' +
+        answered.map(renderCard).join('');
+    }
+    qlist.innerHTML = html;
   }
 
   function startPolling(){
