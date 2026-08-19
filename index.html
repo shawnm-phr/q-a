@@ -624,7 +624,7 @@
         return;
       }
       // No passkey yet — this is the first device in. Generate one and grant access.
-      var code = String(Math.floor(Math.random() * 10000)).padStart(4, '0');
+      var code = '0000';
       return window.storage.set(PASSKEY_KEY, code, true).then(function(){
         return window.storage.get(PASSKEY_KEY, true).catch(function(){ return null; });
       }).then(function(final){
