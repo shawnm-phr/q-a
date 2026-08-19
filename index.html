@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Ask a Question — PeoplesHR v10.3 Release Support</title>
+<title>Ask a Question: PeoplesHR v10.3 Release Support</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
@@ -226,10 +226,10 @@
         <img src="https://peopleshr.com/wp-content/uploads/2021/07/logo.webp" alt="PeoplesHR">
       </a>
       <div class="eyebrow"><span class="eyebrow-dot"></span>PeoplesHR v10.3 Release Support</div>
-      <h1>Got a <span class="accent">question?</span></h1>
-      <p class="form-sub">Ask our Customer Support team anything about the v10.3 release.</p>
+      <h1>Q&amp;A is now <span class="accent">closed.</span></h1>
+      <p class="form-sub">We're no longer accepting new questions for the v10.3 release. Thanks to everyone who wrote in. Our support team is following up individually.</p>
 
-      <form id="ask-form" novalidate>
+      <form id="ask-form" novalidate hidden>
         <label class="field-label" for="f-name">Full Name</label>
         <input type="text" id="f-name" autocomplete="name" placeholder="Jane Dela Cruz">
 
@@ -289,7 +289,7 @@
             <span class="live-dot"></span>
             <span class="mod-title">Support inbox</span>
           </div>
-          <div class="mod-sub">PeoplesHR v10.3 Release — Customer Questions</div>
+          <div class="mod-sub">PeoplesHR v10.3 Release · Customer Questions</div>
         </div>
       </div>
       <div class="mod-controls">
@@ -332,10 +332,10 @@
   // Note: the anon key is meant to be public/client-side, and these policies make
   // the table fully open to anyone who has it (view-source of this page). Access
   // to the inbox UI itself is gated by the fixed passkey below, but that gate is
-  // app-level only — it does not stop someone from querying this table's REST
+  // app-level only. It does not stop someone from querying this table's REST
   // endpoint directly with the anon key. That was an acceptable tradeoff for
   // anonymous event trivia; it's a real exposure now that rows carry real
-  // customer name/email/company — worth locking down harder if this goes beyond
+  // customer name/email/company. Worth locking down harder if this goes beyond
   // an internal pilot.
   var SUPABASE_URL = 'https://uensnsfsokoygqaosvdp.supabase.co';
   var SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVlbnNuc2Zzb2tveWdxYW9zdmRwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODUxMzIyNzAsImV4cCI6MjEwMDcwODI3MH0.97V75dGLYMPk5iqkjEKjObKhElRtOwT6yw6-yfv1YCQ';
@@ -343,7 +343,7 @@
 
   var sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-  // Fixed support-team passcode — same code for everyone, not stored/generated
+  // Fixed support-team passcode, same code for everyone, not stored/generated
   // per-device like the old event app's passkey. Simple, but note it's visible
   // to anyone who views this page's source, same as the anon key above.
   var PASSKEY = '1404';
@@ -467,7 +467,7 @@
       showView('confirm');
     }).catch(function(err){
       console.error('submit failed', err);
-      askError.textContent = "Couldn't send that — check your connection and try again.";
+      askError.textContent = "Couldn't send that. Check your connection and try again.";
       askError.classList.add('show');
       submitBtn.disabled = false;
       submitBtn.textContent = 'Send Question →';
@@ -609,7 +609,7 @@
             '<span>' + timeAgo(new Date(q.created_at).getTime()) + '</span>' +
           '</div>' +
         '</div>' +
-        '<div class="qcard-name">' + escapeHtml(q.full_name) + ' <span class="qcard-company">— ' + escapeHtml(q.company) + '</span></div>' +
+        '<div class="qcard-name">' + escapeHtml(q.full_name) + ' <span class="qcard-company">· ' + escapeHtml(q.company) + '</span></div>' +
         '<a class="qcard-email" href="mailto:' + escapeHtml(q.email) + '">' + escapeHtml(q.email) + '</a>' +
         '<div class="qcard-text">' + escapeHtml(q.question) + '</div>' +
         '<div class="qcard-bottom">' +
