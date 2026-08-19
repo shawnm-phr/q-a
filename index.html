@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Ask a Question — AI. Insights. Action. Philippines 2026</title>
+<title>Ask a Question — PeoplesHR v10.3 Walkthrough</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Raleway:wght@400;500;600;700;800&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
@@ -61,7 +61,14 @@
   /* ---------- Home ---------- */
   #view-home{ align-items:center; justify-content:center; padding:32px 20px 20px; }
   .home-wrap{ width:100%; max-width:460px; }
-  .home-wrap .eyebrow{ text-align:center; margin-bottom:18px; }
+  .home-wrap .eyebrow{
+    display:flex; align-items:center; gap:8px;
+    width:fit-content; margin:0 auto 24px;
+    background:var(--white); border:1px solid var(--line-paper);
+    border-radius:100px; padding:6px 18px;
+    font-weight:700; letter-spacing:1.5px; color:var(--blue);
+  }
+  .home-wrap .eyebrow-dot{ width:6px; height:6px; border-radius:50%; background:var(--blue); flex:none; }
   .home-wrap h1{
     font-size:clamp(34px,8vw,46px);
     font-weight:800;
@@ -263,7 +270,7 @@
   <!-- HOME -->
   <section id="view-home" class="screen">
     <div class="home-wrap">
-      <div class="eyebrow">AI · INSIGHTS · ACTION — PHILIPPINES 2026</div>
+      <div class="eyebrow"><span class="eyebrow-dot"></span>PeoplesHR v10.3 Walkthrough — People Intelligence, Wherever You Are.</div>
       <h1>Ask something.</h1>
       <p class="home-sub">Pick where your question should go.</p>
       <div class="card-stack">
