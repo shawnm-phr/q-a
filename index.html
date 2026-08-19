@@ -3,51 +3,52 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Ask a Question — PeoplesHR v10.3 Walkthrough</title>
+<title>Ask a Question — PeoplesHR v10.3 Release Support</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Raleway:wght@400;500;600;700;800&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <style>
   :root{
-    --ink:#12192B;
-    --ink-2:#1B2440;
-    --ink-3:#242F52;
-    --paper:#F6F1E6;
-    --paper-2:#EDE5D2;
-    --blue:#2A5CDB;
-    --blue-dim:#1E44A8;
-    --panelist:#D98B5F;
-    --panelist-dim:#B96A3F;
-    --peopleshr:#1F9D6B;
-    --peopleshr-dim:#167A54;
-    --line-paper:#DED2B8;
+    --navy:#0D1B3E;
+    --blue:#2563EB;
+    --blue-dark:#1D4ED8;
+    --blue-light:#8FB4FF;
+    --text-body:#374151;
+    --text-muted:#6B7280;
+    --bg-light:#F8FAFC;
+    --border:#CBD5E1;
+    --border-soft:#E2E8F0;
+    --white:#FFFFFF;
+    --error:#D98B5F;
+    --error-dim:#B96A3F;
+    --success:#16A34A;
+    --success-bg:#DCFCE7;
+    --ink:#0D1B3E;
+    --ink-2:#16244A;
+    --ink-3:#1C2F5C;
     --line-ink:rgba(255,255,255,0.14);
-    --muted-paper:#7A7160;
     --muted-ink:#93A0BF;
-    --white:#FFFDF8;
-    --radius:14px;
-    --shadow:0 1px 2px rgba(18,25,43,0.06), 0 8px 24px rgba(18,25,43,0.08);
+    --radius:10px;
+    --shadow:0 4px 16px rgba(37,99,235,0.14);
   }
   *{box-sizing:border-box;}
   html,body{height:100%;}
   body{
     margin:0;
-    font-family:'Raleway',sans-serif;
-    background:var(--paper);
-    color:var(--ink);
+    font-family:'Plus Jakarta Sans',sans-serif;
+    background:#fff;
+    color:var(--navy);
     transition:background .25s ease;
     -webkit-font-smoothing:antialiased;
   }
-  body.ink-mode{ background:var(--ink); color:var(--white); }
+  body.ink-mode{ background:var(--ink); color:#fff; }
   #app{ min-height:100dvh; display:flex; flex-direction:column; }
-  .mono{ font-family:'IBM Plex Mono', monospace; }
   .eyebrow{
-    font-family:'IBM Plex Mono', monospace;
-    font-size:11.5px;
-    letter-spacing:.14em;
-    text-transform:uppercase;
-    color:var(--muted-paper);
+    font-size:12px;
+    font-weight:700;
+    letter-spacing:.4px;
+    color:var(--blue);
   }
   .ink-mode .eyebrow{ color:var(--muted-ink); }
   button{ font-family:inherit; cursor:pointer; }
@@ -58,173 +59,130 @@
   .screen{ display:flex; flex-direction:column; min-height:100dvh; width:100%; }
   .screen[hidden]{ display:none; }
 
-  /* ---------- Home ---------- */
-  #view-home{ align-items:center; justify-content:center; padding:32px 20px 20px; }
-  .home-wrap{ width:100%; max-width:460px; }
-  .home-wrap .eyebrow{
+  /* ---------- Ask form ---------- */
+  #view-form{
+    align-items:center; justify-content:center; padding:48px 20px 40px;
+    background:linear-gradient(160deg,#fff 0%,#f0f6ff 100%);
+  }
+  .form-wrap{ width:100%; max-width:460px; }
+  .form-wrap .eyebrow{
     display:flex; align-items:center; gap:8px;
     width:fit-content; margin:0 auto 24px;
-    background:var(--white); border:1px solid var(--line-paper);
-    border-radius:100px; padding:6px 18px;
-    font-weight:700; letter-spacing:1.5px; color:var(--blue);
+    background:rgba(37,99,235,.08); border:1px solid rgba(37,99,235,.20);
+    border-radius:100px; padding:6px 16px;
   }
-  .home-wrap .eyebrow-dot{ width:6px; height:6px; border-radius:50%; background:var(--blue); flex:none; }
-  .home-wrap h1{
-    font-size:clamp(34px,8vw,46px);
-    font-weight:800;
-    letter-spacing:-0.02em;
+  .form-wrap .eyebrow-dot{ width:6px; height:6px; border-radius:50%; background:var(--blue); flex:none; }
+  .form-wrap h1{
+    font-size:clamp(32px,6vw,44px);
+    font-weight:700;
+    letter-spacing:-1.5px;
+    line-height:1.1;
     text-align:center;
-    margin:0 0 8px;
+    color:var(--navy);
+    margin:0 0 12px;
   }
-  .home-sub{
+  .form-wrap h1 .accent{ color:var(--blue); }
+  .form-sub{
     text-align:center;
-    color:var(--muted-paper);
-    font-size:15.5px;
-    margin:0 0 32px;
+    color:var(--text-body);
+    font-size:16px;
+    line-height:1.6;
+    margin:0 0 34px;
   }
-  .card-stack{ display:flex; flex-direction:column; gap:14px; }
-  .option-card{
-    display:flex; align-items:center; gap:16px;
-    background:var(--white);
-    border:1px solid var(--line-paper);
-    border-left:5px solid var(--track-color, var(--panelist));
-    border-radius:var(--radius);
-    padding:20px 20px;
-    text-align:left;
-    box-shadow:var(--shadow);
-    transition:transform .15s ease, box-shadow .15s ease;
-  }
-  .option-card:hover{ transform:translateY(-2px); box-shadow:0 4px 6px rgba(18,25,43,.08), 0 14px 28px rgba(18,25,43,.10); }
-  .option-card:active{ transform:translateY(0); }
-  .option-card .dot{
-    width:11px; height:11px; border-radius:50%;
-    background:var(--track-color, var(--panelist));
-    flex:none;
-  }
-  .option-card .txt{ flex:1; }
-  .option-card .label{ font-size:11px; letter-spacing:.12em; font-family:'IBM Plex Mono',monospace; color:var(--track-color, var(--panelist)); text-transform:uppercase; margin-bottom:4px; }
-  .option-card .title{ font-size:19px; font-weight:700; margin-bottom:2px; }
-  .option-card .desc{ font-size:13.5px; color:var(--muted-paper); }
-  .option-card .arrow{ font-size:20px; color:var(--muted-paper); flex:none; }
-  .card--panelist{ --track-color: var(--blue); }
-  .card--peopleshr{ --track-color: var(--peopleshr); }
 
-  .mod-link-row{ text-align:center; margin-top:30px; }
-  .mod-link{
-    background:none; border:none; color:var(--muted-paper);
-    font-size:12.5px; font-family:'IBM Plex Mono',monospace;
-    letter-spacing:.04em; text-decoration:underline; text-underline-offset:3px;
-    opacity:.7;
+  label.field-label{ display:block; font-size:13px; font-weight:600; color:var(--text-muted); margin:0 0 8px; }
+  textarea, input[type=text], input[type=email]{
+    width:100%; border:1.5px solid var(--border-soft); border-radius:var(--radius);
+    background:var(--white); color:var(--navy);
+    font-family:'Plus Jakarta Sans',sans-serif; font-size:15.5px; padding:13px 16px;
+    resize:vertical; transition:border-color .2s;
   }
-  .mod-link:hover{ opacity:1; }
-
-  /* ---------- Ask ---------- */
-  #view-ask{ padding:20px; align-items:center; }
-  .ask-wrap{ width:100%; max-width:460px; margin-top:8px; }
-  .ask-top{ display:flex; align-items:center; justify-content:space-between; margin-bottom:22px; }
-  .back-btn{
-    background:none; border:none; font-size:14px; color:var(--ink);
-    display:flex; align-items:center; gap:6px; padding:6px 0; font-weight:600;
-  }
-  .chip{
-    display:inline-flex; align-items:center; gap:7px;
-    padding:6px 12px; border-radius:999px;
-    font-family:'IBM Plex Mono',monospace; font-size:11.5px; letter-spacing:.08em; text-transform:uppercase;
-    background:var(--paper-2); border:1px solid var(--line-paper);
-  }
-  .chip .dot{ width:8px; height:8px; border-radius:50%; }
-  .ask-wrap h2{ font-size:24px; font-weight:800; margin:0 0 16px; letter-spacing:-0.01em; }
-  label.field-label{ display:block; font-size:12px; font-family:'IBM Plex Mono',monospace; letter-spacing:.06em; color:var(--muted-paper); text-transform:uppercase; margin:0 0 8px; }
-  textarea, input[type=text]{
-    width:100%; border:1px solid var(--line-paper); border-radius:10px;
-    background:var(--white); color:var(--ink);
-    font-family:'Raleway',sans-serif; font-size:16px; padding:14px;
-    resize:vertical;
-  }
+  textarea::placeholder, input::placeholder{ color:#9CA3AF; }
+  textarea:focus, input[type=text]:focus, input[type=email]:focus{ border-color:var(--blue); }
   textarea{ min-height:130px; margin-bottom:6px; }
-  .char-count{ text-align:right; font-size:11.5px; color:var(--muted-paper); font-family:'IBM Plex Mono',monospace; margin-bottom:20px; }
-  input[type=text]{ margin-bottom:22px; }
+  input[type=text], input[type=email]{ margin-bottom:22px; }
+  textarea.invalid, input.invalid{ border-color:var(--error-dim); }
+  .char-count{ text-align:right; font-size:12px; color:var(--text-muted); margin-bottom:20px; }
   .field-error{
-    display:none; background:#FBE6DD; border:1px solid var(--panelist-dim); color:var(--panelist-dim);
+    display:none; background:#FBE6DD; border:1px solid var(--error-dim); color:var(--error-dim);
     font-size:13.5px; padding:10px 12px; border-radius:8px; margin-bottom:16px;
   }
   .field-error.show{ display:block; }
   .submit-btn{
-    width:100%; padding:16px; border:none; border-radius:10px;
-    background:var(--ink); color:var(--white); font-size:16px; font-weight:700;
-    letter-spacing:.01em;
+    width:100%; padding:15px; border:none; border-radius:var(--radius);
+    background:var(--blue); color:#fff; font-size:15.5px; font-weight:600;
+    box-shadow:var(--shadow); transition:background .2s, transform .2s, box-shadow .2s;
   }
-  .submit-btn:disabled{ opacity:.55; cursor:default; }
-  .submit-btn:hover:not(:disabled){ background:var(--ink-2); }
-  #submit-btn{ background:var(--blue); }
-  #submit-btn:hover:not(:disabled){ background:var(--blue-dim); }
+  .submit-btn:disabled{ opacity:.55; cursor:default; transform:none !important; }
+  .submit-btn:hover:not(:disabled){ background:var(--blue-dark); transform:translateY(-2px); box-shadow:0 8px 24px rgba(37,99,235,0.28); }
+
+  .form-footer{ text-align:center; margin-top:26px; }
+  .mod-link{
+    background:none; border:none; color:var(--text-muted);
+    font-size:13px; font-weight:600;
+    text-decoration:underline; text-underline-offset:3px;
+    opacity:.75;
+  }
+  .mod-link:hover{ opacity:1; color:var(--blue); }
 
   /* ---------- Confirm ---------- */
-  #view-confirm{ align-items:center; justify-content:center; padding:20px; text-align:center; }
-  .ticket-card{
-    background:var(--white); border:1px solid var(--line-paper); border-radius:18px;
-    padding:40px 32px; max-width:380px; width:100%; box-shadow:var(--shadow);
+  #view-confirm{
+    align-items:center; justify-content:center; padding:20px; text-align:center;
+    background:linear-gradient(160deg,#fff 0%,#f0f6ff 100%);
   }
-  .ticket-num{ font-family:'IBM Plex Mono',monospace; font-size:46px; font-weight:600; letter-spacing:.02em; margin-bottom:6px; }
-  .ticket-card h3{ font-size:19px; margin:6px 0 4px; font-weight:800; }
-  .ticket-card p{ color:var(--muted-paper); font-size:14px; margin:0 0 26px; }
+  .confirm-card{
+    background:var(--white); border:1px solid var(--border-soft); border-radius:16px;
+    padding:44px 32px; max-width:380px; width:100%; box-shadow:0 8px 40px rgba(13,27,62,0.10);
+  }
+  .confirm-icon{
+    width:52px; height:52px; border-radius:50%; margin:0 auto 18px;
+    background:var(--success-bg); color:var(--success);
+    display:flex; align-items:center; justify-content:center; font-size:24px; font-weight:800;
+  }
+  .confirm-card h3{ font-size:22px; margin:0 0 8px; font-weight:700; color:var(--navy); letter-spacing:-.5px; }
+  .confirm-card p{ color:var(--text-body); font-size:15px; margin:0 0 26px; line-height:1.55; }
   .again-btn{
-    background:none; border:1.5px solid var(--blue); color:var(--blue);
-    padding:12px 22px; border-radius:10px; font-weight:700; font-size:14.5px;
+    background:#fff; border:1.5px solid var(--border); color:var(--navy);
+    padding:13px 24px; border-radius:var(--radius); font-weight:600; font-size:14.5px;
+    transition:all .2s;
   }
-  .again-btn:hover{ background:var(--blue); color:var(--white); }
+  .again-btn:hover{ border-color:var(--blue); color:var(--blue); transform:translateY(-2px); }
 
-  /* ---------- Moderator gate ---------- */
+  /* ---------- Support team gate ---------- */
   #view-mod-gate{ align-items:center; justify-content:center; padding:20px; text-align:center; }
   .gate-wrap{ max-width:340px; width:100%; }
-  .gate-wrap .eyebrow{ margin-bottom:14px; }
-  .gate-wrap h2{ font-size:24px; font-weight:800; margin:0 0 8px; }
+  .gate-wrap .eyebrow{ margin-bottom:14px; color:var(--muted-ink); letter-spacing:1.5px; text-transform:uppercase; }
+  .gate-wrap h2{ font-size:24px; font-weight:700; margin:0 0 8px; letter-spacing:-.5px; }
   .gate-desc{ color:var(--muted-ink); font-size:14px; margin:0 0 26px; min-height:18px; }
   .gate-input-row{ display:flex; gap:10px; justify-content:center; margin-bottom:14px; }
   .gate-box{
     width:100%; max-width:60px; aspect-ratio:1/1; text-align:center;
-    font-family:'IBM Plex Mono',monospace; font-size:28px; border-radius:10px;
-    border:1px solid var(--line-ink); background:var(--ink-2); color:var(--white);
+    font-family:'Plus Jakarta Sans',sans-serif; font-size:26px; font-weight:700; border-radius:10px;
+    border:1px solid var(--line-ink); background:var(--ink-2); color:#fff;
   }
-  .gate-box:focus{ outline:none; border-color:var(--panelist); }
-  .gate-wrap .field-error{ background:rgba(217,139,95,.18); border-color:var(--panelist); color:#F2C4A0; }
+  .gate-box:focus{ outline:none; border-color:var(--error); }
+  .gate-wrap .field-error{ background:rgba(217,139,95,.18); border-color:var(--error); color:#F2C4A0; }
 
-  .passkey-banner{
-    display:none; align-items:center; justify-content:space-between; gap:14px;
-    background:rgba(217,139,95,.16); border:1px solid var(--panelist);
-    color:#F6D6BF; font-size:13px; padding:12px 16px; border-radius:10px;
-    margin-bottom:20px; font-family:'IBM Plex Mono',monospace;
-  }
-  .passkey-banner strong{ font-size:16px; letter-spacing:.08em; }
-  .passkey-banner button{ background:none; border:none; color:inherit; font-size:17px; line-height:1; opacity:.7; }
-  .passkey-banner button:hover{ opacity:1; }
-
-  /* ---------- Moderator ---------- */
+  /* ---------- Support inbox ---------- */
   #view-mod{ padding:26px 20px 60px; }
   .mod-wrap{ width:100%; max-width:760px; margin:0 auto; }
   .mod-header{ display:flex; align-items:flex-start; justify-content:space-between; gap:16px; margin-bottom:22px; flex-wrap:wrap; }
   .mod-title-row{ display:flex; align-items:center; gap:9px; }
-  .live-dot{ width:8px; height:8px; border-radius:50%; background:var(--panelist); animation:pulse 1.8s ease-in-out infinite; }
+  .live-dot{ width:8px; height:8px; border-radius:50%; background:var(--error); animation:pulse 1.8s ease-in-out infinite; }
   @media (prefers-reduced-motion: reduce){ .live-dot{ animation:none; } .qcard{ animation:none !important; } }
   @keyframes pulse{ 0%,100%{ opacity:1; } 50%{ opacity:.35; } }
-  .mod-title{ font-size:20px; font-weight:800; letter-spacing:-0.01em; }
+  .mod-title{ font-size:20px; font-weight:700; letter-spacing:-.5px; }
   .mod-sub{ color:var(--muted-ink); font-size:13px; margin-top:3px; }
 
   .mod-controls{ display:flex; align-items:center; justify-content:space-between; gap:14px; flex-wrap:wrap; margin-bottom:20px; border-top:1px solid var(--line-ink); border-bottom:1px solid var(--line-ink); padding:12px 0; }
-  .tabs{ display:flex; gap:6px; }
-  .tab-btn{
-    background:none; border:1px solid var(--line-ink); color:var(--muted-ink);
-    padding:8px 14px; border-radius:999px; font-size:13px; font-weight:600;
-    font-family:'IBM Plex Mono',monospace;
-  }
-  .tab-btn.active{ background:var(--white); color:var(--ink); border-color:var(--white); }
-  .hide-answered-row{ display:flex; align-items:center; gap:7px; font-size:12.5px; color:var(--muted-ink); font-family:'IBM Plex Mono',monospace; }
+  .mod-count{ font-size:13px; font-weight:600; color:var(--muted-ink); }
+  .hide-answered-row{ display:flex; align-items:center; gap:7px; font-size:12.5px; font-weight:600; color:var(--muted-ink); }
 
   .qlist{ display:flex; flex-direction:column; gap:12px; }
   .qlist-divider{
     display:flex; align-items:center; gap:10px;
     margin:10px 0 -2px; padding-top:14px; border-top:1px solid var(--line-ink);
-    font-family:'IBM Plex Mono',monospace; font-size:11.5px; letter-spacing:.1em;
+    font-size:11.5px; font-weight:700; letter-spacing:.08em;
     text-transform:uppercase; color:var(--muted-ink);
   }
   .qlist-divider span{ opacity:.7; }
@@ -235,101 +193,75 @@
   @keyframes slideIn{ from{ opacity:0; transform:translateY(-6px);} to{ opacity:1; transform:translateY(0);} }
   .qcard.answered{ opacity:.5; }
   .qcard-top{ display:flex; align-items:center; justify-content:space-between; gap:10px; margin-bottom:10px; }
-  .qcard-meta{ display:flex; align-items:center; gap:10px; font-family:'IBM Plex Mono',monospace; font-size:12px; color:var(--muted-ink); }
-  .qcard-ticket{ color:var(--white); font-weight:600; }
-  .track-badge{ font-size:10.5px; letter-spacing:.08em; text-transform:uppercase; padding:3px 8px; border-radius:5px; font-family:'IBM Plex Mono',monospace; }
-  .track-badge.panelist{ background:rgba(42,92,219,.18); color:#8FB4FF; }
-  .track-badge.peopleshr{ background:rgba(31,157,107,.22); color:#6FE0B3; }
+  .qcard-meta{ display:flex; align-items:center; gap:8px; font-size:12px; font-weight:600; color:var(--muted-ink); }
+  .qcard-ref{ color:#fff; }
+  .qcard-name{ font-size:15.5px; font-weight:700; margin-bottom:2px; }
+  .qcard-name .qcard-company{ font-weight:500; color:var(--muted-ink); }
+  .qcard-email{ display:inline-block; font-size:13px; font-weight:600; color:var(--blue-light); text-decoration:none; margin-bottom:10px; }
+  .qcard-email:hover{ text-decoration:underline; }
   .qcard-text{ font-size:15.5px; line-height:1.45; margin-bottom:10px; }
   .qcard.answered .qcard-text{ text-decoration:line-through; text-decoration-color:var(--muted-ink); }
   .qcard-bottom{ display:flex; align-items:center; justify-content:flex-end; }
   .mark-btn{
     background:none; border:1px solid var(--line-ink); color:var(--muted-ink);
-    padding:6px 12px; border-radius:7px; font-size:12px; font-family:'IBM Plex Mono',monospace;
+    padding:6px 12px; border-radius:7px; font-size:12px; font-weight:600;
   }
-  .mark-btn.done{ border-color:var(--peopleshr); color:#6FE0B3; }
-  .mark-btn:hover{ border-color:var(--white); color:var(--white); }
+  .mark-btn.done{ border-color:var(--success); color:#4ADE80; }
+  .mark-btn:hover{ border-color:#fff; color:#fff; }
 
   .empty-state{ text-align:center; padding:60px 20px; color:var(--muted-ink); }
-  .empty-state .big{ font-size:15.5px; margin-bottom:6px; color:var(--white); font-weight:700; }
+  .empty-state .big{ font-size:15.5px; margin-bottom:6px; color:#fff; font-weight:700; }
   .empty-state .small{ font-size:13px; }
-
-  .mod-footer{ margin-top:34px; padding-top:16px; border-top:1px solid var(--line-ink); text-align:center; }
-  .clear-btn{ background:none; border:none; color:var(--muted-ink); font-size:12px; font-family:'IBM Plex Mono',monospace; text-decoration:underline; text-underline-offset:3px; opacity:.7; }
-  .clear-btn:hover{ opacity:1; color:#E8A876; }
-
-  @media (max-width: 480px){
-    .mod-controls{ flex-direction:column; align-items:flex-start; }
-    .option-card .txt{ text-align:center; }
-  }
 </style>
 </head>
 <body>
 <div id="app">
 
-  <!-- HOME -->
-  <section id="view-home" class="screen">
-    <div class="home-wrap">
-      <div class="eyebrow"><span class="eyebrow-dot"></span>PeoplesHR v10.3 Walkthrough — People Intelligence, Wherever You Are.</div>
-      <h1>Ask something.</h1>
-      <p class="home-sub">Pick where your question should go.</p>
-      <div class="card-stack">
-        <button class="option-card card--panelist" data-category="panelist">
-          <span class="dot"></span>
-          <span class="txt">
-            <span class="label">Panelists</span>
-            <span class="title">Ask the panel</span>
-            <span class="desc">For the speakers on stage.</span>
-          </span>
-          <span class="arrow">→</span>
-        </button>
-        <button class="option-card card--peopleshr" data-category="peopleshr">
-          <span class="dot"></span>
-          <span class="txt">
-            <span class="label">PeoplesHR</span>
-            <span class="title">Ask PeoplesHR</span>
-            <span class="desc">For questions about the platform.</span>
-          </span>
-          <span class="arrow">→</span>
-        </button>
-      </div>
-      <div class="mod-link-row">
-        <button class="mod-link" id="mod-link-btn">Moderator view →</button>
-      </div>
-    </div>
-  </section>
+  <!-- ASK FORM -->
+  <section id="view-form" class="screen">
+    <div class="form-wrap">
+      <div class="eyebrow"><span class="eyebrow-dot"></span>PeoplesHR v10.3 Release Support</div>
+      <h1>Got a <span class="accent">question?</span></h1>
+      <p class="form-sub">Ask our Customer Support team anything about the v10.3 release.</p>
 
-  <!-- ASK -->
-  <section id="view-ask" class="screen" hidden>
-    <div class="ask-wrap">
-      <div class="ask-top">
-        <button class="back-btn" id="ask-back-btn">← Back</button>
-        <span class="chip" id="ask-chip"><span class="dot"></span><span id="ask-chip-label">Panelists</span></span>
+      <form id="ask-form" novalidate>
+        <label class="field-label" for="f-name">Full Name</label>
+        <input type="text" id="f-name" autocomplete="name" placeholder="Jane Dela Cruz">
+
+        <label class="field-label" for="f-email">Email Address</label>
+        <input type="email" id="f-email" autocomplete="email" inputmode="email" placeholder="jane@company.com">
+
+        <label class="field-label" for="f-company">Company</label>
+        <input type="text" id="f-company" autocomplete="organization" placeholder="Acme Corp">
+
+        <label class="field-label" for="f-text">Your Question</label>
+        <textarea id="f-text" maxlength="500" placeholder="Type your question here…"></textarea>
+        <div class="char-count"><span id="char-count">0</span>/500</div>
+
+        <div class="field-error" id="ask-error">Fill in all fields before sending.</div>
+        <button type="submit" class="submit-btn" id="submit-btn">Send Question →</button>
+      </form>
+
+      <div class="form-footer">
+        <button class="mod-link" id="mod-link-btn">Support team login →</button>
       </div>
-      <h2>Your question</h2>
-      <label class="field-label" for="q-text">Question</label>
-      <textarea id="q-text" maxlength="500" placeholder="Type your question here…"></textarea>
-      <div class="char-count"><span id="char-count">0</span>/500</div>
-      <div class="field-error" id="ask-error">Write your question before sending.</div>
-      <button class="submit-btn" id="submit-btn">Send question</button>
     </div>
   </section>
 
   <!-- CONFIRM -->
   <section id="view-confirm" class="screen" hidden>
-    <div class="ticket-card">
-      <div class="eyebrow" style="text-align:center; margin-bottom:14px;">TICKET</div>
-      <div class="ticket-num mono" id="confirm-ticket">Q-0000</div>
-      <h3>You're in the queue.</h3>
-      <p>We'll get to your question soon.</p>
+    <div class="confirm-card">
+      <div class="confirm-icon">✓</div>
+      <h3>Thanks!</h3>
+      <p>Your question has been sent to our support team.</p>
       <button class="again-btn" id="again-btn">Ask another question</button>
     </div>
   </section>
 
-  <!-- MODERATOR GATE -->
+  <!-- SUPPORT TEAM GATE -->
   <section id="view-mod-gate" class="screen" hidden>
     <div class="gate-wrap">
-      <div class="eyebrow">MODERATOR ACCESS</div>
+      <div class="eyebrow">SUPPORT TEAM ACCESS</div>
       <h2>Enter passkey</h2>
       <p class="gate-desc" id="gate-desc">Checking access…</p>
       <div class="gate-input-row" id="gate-input-row" style="display:none;">
@@ -343,40 +275,29 @@
     </div>
   </section>
 
-  <!-- MODERATOR -->
+  <!-- SUPPORT INBOX -->
   <section id="view-mod" class="screen" hidden>
     <div class="mod-wrap">
       <div class="mod-header">
         <div>
           <div class="mod-title-row">
             <span class="live-dot"></span>
-            <span class="mod-title">Live queue</span>
+            <span class="mod-title">Support inbox</span>
           </div>
-          <div class="mod-sub">AI. INSIGHTS. ACTION. — Philippines 2026</div>
+          <div class="mod-sub">PeoplesHR v10.3 Release — Customer Questions</div>
         </div>
-      </div>
-      <div class="passkey-banner" id="passkey-banner">
-        <span>New moderator passkey: <strong id="passkey-banner-code"></strong> — share this with your team.</span>
-        <button id="passkey-banner-dismiss" aria-label="Dismiss">×</button>
       </div>
       <div class="mod-controls">
-        <div class="tabs" id="mod-tabs">
-          <button class="tab-btn active" data-filter="all">All <span id="count-all">(0)</span></button>
-          <button class="tab-btn" data-filter="panelist">Panelists <span id="count-panelist">(0)</span></button>
-          <button class="tab-btn" data-filter="peopleshr">PeoplesHR <span id="count-peopleshr">(0)</span></button>
-        </div>
+        <div class="mod-count" id="mod-count">0 open</div>
         <label class="hide-answered-row">
           <input type="checkbox" id="hide-answered-cb">
-          Hide answered
+          Hide resolved
         </label>
       </div>
       <div class="qlist" id="qlist"></div>
       <div class="empty-state" id="mod-empty" style="display:none;">
         <div class="big">No questions yet.</div>
-        <div class="small">They'll land here the moment someone asks.</div>
-      </div>
-      <div class="mod-footer">
-        <button class="clear-btn" id="clear-btn">Clear entire queue</button>
+        <div class="small">They'll land here the moment a customer asks.</div>
       </div>
     </div>
   </section>
@@ -388,65 +309,44 @@
   'use strict';
 
   // ---------- Supabase-backed storage ----------
-  // 1. Create a free project at https://supabase.com
-  // 2. In the SQL editor, run:
-  //      create table kv_store (
-  //        key text primary key,
-  //        value text,
-  //        updated_at timestamptz default now()
+  // Question data lives in its own typed table (run this once in the SQL editor):
+  //      create table support_questions (
+  //        id bigint generated always as identity primary key,
+  //        full_name text not null,
+  //        email text not null,
+  //        company text not null,
+  //        question text not null,
+  //        resolved boolean not null default false,
+  //        created_at timestamptz not null default now()
   //      );
-  //      alter table kv_store enable row level security;
-  //      create policy "public read" on kv_store for select using (true);
-  //      create policy "public write" on kv_store for insert with check (true);
-  //      create policy "public update" on kv_store for update using (true);
-  //      create policy "public delete" on kv_store for delete using (true);
-  // 3. Paste your project URL and anon public key below (Project Settings → API).
-  //    Note: the anon key is meant to be public/client-side, but this policy makes
-  //    the table fully open to anyone who has it — fine for a low-stakes event Q&A,
-  //    but don't reuse this table/project for anything sensitive.
+  //      alter table support_questions enable row level security;
+  //      create policy "public insert" on support_questions for insert with check (true);
+  //      create policy "public read" on support_questions for select using (true);
+  //      create policy "public update" on support_questions for update using (true);
+  //      create policy "public delete" on support_questions for delete using (true);
+  // Note: the anon key is meant to be public/client-side, and these policies make
+  // the table fully open to anyone who has it (view-source of this page). Access
+  // to the inbox UI itself is gated by the fixed passkey below, but that gate is
+  // app-level only — it does not stop someone from querying this table's REST
+  // endpoint directly with the anon key. That was an acceptable tradeoff for
+  // anonymous event trivia; it's a real exposure now that rows carry real
+  // customer name/email/company — worth locking down harder if this goes beyond
+  // an internal pilot.
   var SUPABASE_URL = 'https://uensnsfsokoygqaosvdp.supabase.co';
   var SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVlbnNuc2Zzb2tveWdxYW9zdmRwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODUxMzIyNzAsImV4cCI6MjEwMDcwODI3MH0.97V75dGLYMPk5iqkjEKjObKhElRtOwT6yw6-yfv1YCQ';
-  var KV_TABLE = 'kv_store';
+  var SQ_TABLE = 'support_questions';
 
   var sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-  window.storage = {
-    get: function(key){
-      return sb.from(KV_TABLE).select('value').eq('key', key).maybeSingle().then(function(res){
-        if (res.error) throw res.error;
-        return res.data ? { value: res.data.value } : null;
-      });
-    },
-    set: function(key, value){
-      return sb.from(KV_TABLE).upsert({ key: key, value: value }).then(function(res){
-        if (res.error) throw res.error;
-        return true;
-      });
-    },
-    delete: function(key){
-      return sb.from(KV_TABLE).delete().eq('key', key).then(function(res){
-        if (res.error) throw res.error;
-        return true;
-      });
-    },
-    list: function(prefix){
-      return sb.from(KV_TABLE).select('key').like('key', prefix + '%').then(function(res){
-        if (res.error) throw res.error;
-        return { keys: (res.data || []).map(function(r){ return r.key; }) };
-      });
-    }
-  };
-
-  var QKEY_PREFIX = 'q_';
-  var COUNTER_KEY = 'ticket_counter';
-  var PASSKEY_KEY = 'mod_passkey';
+  // Fixed support-team passcode — same code for everyone, not stored/generated
+  // per-device like the old event app's passkey. Simple, but note it's visible
+  // to anyone who views this page's source, same as the anon key above.
+  var PASSKEY = '1404';
+  var EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
   var qCache = {};
-  var currentCategory = 'panelist';
-  var currentFilter = 'all';
   var hideAnswered = false;
   var pollTimer = null;
   var modUnlocked = false;
-  var freshlyGeneratedCode = null;
 
   function escapeHtml(str){
     return String(str).replace(/[&<>"']/g, function(ch){
@@ -465,12 +365,9 @@
     return d + 'd ago';
   }
 
-  function trackLabel(cat){ return cat === 'peopleshr' ? 'PeoplesHR' : 'Panelists'; }
-
   // ---------- View switching ----------
   var screens = {
-    home: document.getElementById('view-home'),
-    ask: document.getElementById('view-ask'),
+    form: document.getElementById('view-form'),
     confirm: document.getElementById('view-confirm'),
     modgate: document.getElementById('view-mod-gate'),
     mod: document.getElementById('view-mod')
@@ -488,107 +385,94 @@
     }
   }
 
-  // ---------- Home ----------
-  document.querySelectorAll('.option-card').forEach(function(btn){
-    btn.addEventListener('click', function(){
-      currentCategory = btn.getAttribute('data-category');
-      openAskScreen();
-    });
-  });
-
   document.getElementById('mod-link-btn').addEventListener('click', function(){
     try { history.replaceState(null, '', '?mod=1'); } catch(e){}
     enterModFlow();
   });
 
-  // ---------- Ask ----------
-  var qText = document.getElementById('q-text');
+  // ---------- Ask form ----------
+  var nameInput = document.getElementById('f-name');
+  var emailInput = document.getElementById('f-email');
+  var companyInput = document.getElementById('f-company');
+  var qText = document.getElementById('f-text');
   var charCount = document.getElementById('char-count');
   var askError = document.getElementById('ask-error');
   var submitBtn = document.getElementById('submit-btn');
-  var askChipLabel = document.getElementById('ask-chip-label');
-  var askChip = document.getElementById('ask-chip');
-
-  function openAskScreen(){
-    qText.value = '';
-    charCount.textContent = '0';
-    askError.classList.remove('show');
-    submitBtn.disabled = false;
-    submitBtn.textContent = 'Send question';
-    askChipLabel.textContent = trackLabel(currentCategory);
-    askChip.querySelector('.dot').style.background = currentCategory === 'peopleshr' ? 'var(--peopleshr)' : 'var(--blue)';
-    showView('ask');
-    setTimeout(function(){ qText.focus(); }, 50);
-  }
+  var askForm = document.getElementById('ask-form');
 
   qText.addEventListener('input', function(){
     charCount.textContent = String(qText.value.length);
-    if (qText.value.trim().length > 0) askError.classList.remove('show');
   });
 
-  document.getElementById('ask-back-btn').addEventListener('click', function(){
-    showView('home');
+  [nameInput, emailInput, companyInput, qText].forEach(function(el){
+    el.addEventListener('input', function(){
+      el.classList.remove('invalid');
+      askError.classList.remove('show');
+    });
   });
 
-  document.getElementById('submit-btn').addEventListener('click', function(){
+  function resetForm(){
+    askForm.reset();
+    charCount.textContent = '0';
+    askError.classList.remove('show');
+    [nameInput, emailInput, companyInput, qText].forEach(function(el){ el.classList.remove('invalid'); });
+    submitBtn.disabled = false;
+    submitBtn.textContent = 'Send Question →';
+  }
+
+  function validateForm(){
+    var name = nameInput.value.trim();
+    var email = emailInput.value.trim();
+    var company = companyInput.value.trim();
     var text = qText.value.trim();
-    if (!text){
-      askError.textContent = 'Write your question before sending.';
+
+    if (!name){ return { el: nameInput, message: 'Enter your full name.' }; }
+    if (!email || !EMAIL_RE.test(email)){ return { el: emailInput, message: 'Enter a valid email address.' }; }
+    if (!company){ return { el: companyInput, message: 'Enter your company.' }; }
+    if (!text){ return { el: qText, message: 'Write your question before sending.' }; }
+    return null;
+  }
+
+  askForm.addEventListener('submit', function(e){
+    e.preventDefault();
+    var problem = validateForm();
+    if (problem){
+      [nameInput, emailInput, companyInput, qText].forEach(function(el){ el.classList.remove('invalid'); });
+      problem.el.classList.add('invalid');
+      askError.textContent = problem.message;
       askError.classList.add('show');
-      qText.focus();
+      problem.el.focus();
       return;
     }
     submitBtn.disabled = true;
     submitBtn.textContent = 'Sending…';
-    submitQuestion(currentCategory, text).then(function(q){
-      document.getElementById('confirm-ticket').textContent = 'Q-' + String(q.ticket).padStart(4, '0');
+    submitQuestion(nameInput.value.trim(), emailInput.value.trim(), companyInput.value.trim(), qText.value.trim()).then(function(){
       showView('confirm');
     }).catch(function(err){
       console.error('submit failed', err);
       askError.textContent = "Couldn't send that — check your connection and try again.";
       askError.classList.add('show');
       submitBtn.disabled = false;
-      submitBtn.textContent = 'Send question';
+      submitBtn.textContent = 'Send Question →';
     });
   });
 
   document.getElementById('again-btn').addEventListener('click', function(){
-    showView('home');
+    resetForm();
+    showView('form');
   });
 
   // ---------- Storage: submit ----------
-  function nextTicketNumber(){
-    return window.storage.get(COUNTER_KEY, true).catch(function(){ return null; }).then(function(res){
-      var cur = (res && res.value) ? (parseInt(res.value, 10) || 0) : 0;
-      var next = cur + 1;
-      return window.storage.set(COUNTER_KEY, String(next), true).then(function(result){
-        if (!result) throw new Error('counter set failed');
-        return next;
-      });
+  function submitQuestion(name, email, company, text){
+    return sb.from(SQ_TABLE).insert({
+      full_name: name, email: email, company: company, question: text
+    }).select().single().then(function(res){
+      if (res.error) throw res.error;
+      return res.data;
     });
   }
 
-  function submitQuestion(category, text){
-    return nextTicketNumber().catch(function(){
-      return (Date.now() % 9000) + 1000; // fallback ticket number if counter fails
-    }).then(function(ticket){
-      var id = QKEY_PREFIX + String(ticket).padStart(4, '0') + '_' + Math.random().toString(36).slice(2, 7);
-      var payload = {
-        ticket: ticket,
-        category: category,
-        text: text.trim(),
-        ts: Date.now(),
-        answered: false
-      };
-      return window.storage.set(id, JSON.stringify(payload), true).then(function(result){
-        if (!result) throw new Error('storage set failed');
-        payload.id = id;
-        return payload;
-      });
-    });
-  }
-
-  // ---------- Moderator access (passkey gate) ----------
+  // ---------- Support team access (passkey gate) ----------
   var gateDesc = document.getElementById('gate-desc');
   var gateInputRow = document.getElementById('gate-input-row');
   var gateBoxes = Array.prototype.slice.call(document.querySelectorAll('.gate-box'));
@@ -604,38 +488,13 @@
 
   function enterModFlow(){
     if (modUnlocked){ activateModView(); return; }
-    gateDesc.textContent = 'Checking access…';
-    gateInputRow.style.display = 'none';
-    gateUnlockBtn.style.display = 'none';
+    gateDesc.textContent = 'Ask your team lead for the 4-digit support access code.';
+    gateInputRow.style.display = 'flex';
+    gateUnlockBtn.style.display = 'block';
     gateError.classList.remove('show');
     clearGateBoxes();
     showView('modgate');
-    checkOrCreatePasskey();
-  }
-
-  function checkOrCreatePasskey(){
-    window.storage.get(PASSKEY_KEY, true).catch(function(){ return null; }).then(function(res){
-      if (res && res.value){
-        // A passkey already exists — this device needs to enter it.
-        gateDesc.textContent = 'Ask your organizer for the 4-digit moderator code.';
-        gateInputRow.style.display = 'flex';
-        gateUnlockBtn.style.display = 'block';
-        gateBoxes[0].focus();
-        return;
-      }
-      // No passkey yet — this is the first device in. Generate one and grant access.
-      var code = '0000';
-      return window.storage.set(PASSKEY_KEY, code, true).then(function(){
-        return window.storage.get(PASSKEY_KEY, true).catch(function(){ return null; });
-      }).then(function(final){
-        freshlyGeneratedCode = (final && final.value) ? final.value : code;
-        modUnlocked = true;
-        activateModView();
-      });
-    }).catch(function(e){
-      console.error('passkey check failed', e);
-      gateDesc.textContent = "Couldn't check access — check your connection and try again.";
-    });
+    gateBoxes[0].focus();
   }
 
   function attemptUnlock(){
@@ -645,18 +504,15 @@
       gateError.classList.add('show');
       return;
     }
-    window.storage.get(PASSKEY_KEY, true).catch(function(){ return null; }).then(function(res){
-      var real = res && res.value;
-      if (real && val === real){
-        modUnlocked = true;
-        activateModView();
-      } else {
-        gateError.textContent = 'Incorrect passkey.';
-        gateError.classList.add('show');
-        clearGateBoxes();
-        gateBoxes[0].focus();
-      }
-    });
+    if (val === PASSKEY){
+      modUnlocked = true;
+      activateModView();
+    } else {
+      gateError.textContent = 'Incorrect passkey.';
+      gateError.classList.add('show');
+      clearGateBoxes();
+      gateBoxes[0].focus();
+    }
   }
 
   gateUnlockBtn.addEventListener('click', attemptUnlock);
@@ -692,95 +548,56 @@
 
   function activateModView(){
     showView('mod');
-    if (freshlyGeneratedCode){
-      document.getElementById('passkey-banner-code').textContent = freshlyGeneratedCode;
-      document.getElementById('passkey-banner').style.display = 'flex';
-    }
   }
 
-  document.getElementById('passkey-banner-dismiss').addEventListener('click', function(){
-    document.getElementById('passkey-banner').style.display = 'none';
-  });
-
-  // ---------- Moderator ----------
+  // ---------- Support inbox ----------
   var qlist = document.getElementById('qlist');
   var modEmpty = document.getElementById('mod-empty');
-
-  document.getElementById('mod-tabs').addEventListener('click', function(e){
-    var btn = e.target.closest('.tab-btn');
-    if (!btn) return;
-    currentFilter = btn.getAttribute('data-filter');
-    document.querySelectorAll('.tab-btn').forEach(function(b){ b.classList.toggle('active', b === btn); });
-    renderQueue();
-  });
+  var modCount = document.getElementById('mod-count');
 
   document.getElementById('hide-answered-cb').addEventListener('change', function(e){
     hideAnswered = e.target.checked;
     renderQueue();
   });
 
-  document.getElementById('clear-btn').addEventListener('click', function(){
-    if (!window.confirm('Clear the entire queue? This removes all questions for everyone.')) return;
-    var ids = Object.keys(qCache);
-    Promise.all(ids.map(function(id){
-      return window.storage.delete(id, true).catch(function(e){ console.error('delete failed', id, e); });
-    })).then(function(){
-      return window.storage.delete(COUNTER_KEY, true).catch(function(){});
-    }).then(function(){
-      qCache = {};
-      renderQueue();
-    });
-  });
-
   qlist.addEventListener('click', function(e){
     var btn = e.target.closest('.mark-btn');
     if (!btn) return;
-    var id = btn.getAttribute('data-id');
+    var id = Number(btn.getAttribute('data-id'));
     var q = qCache[id];
     if (!q) return;
-    q.answered = !q.answered;
+    q.resolved = !q.resolved;
     renderQueue();
-    window.storage.set(id, JSON.stringify({
-      ticket: q.ticket, category: q.category, text: q.text, ts: q.ts, answered: q.answered
-    }), true).catch(function(e){ console.error('mark answered failed', e); });
+    sb.from(SQ_TABLE).update({ resolved: q.resolved }).eq('id', id).then(function(res){
+      if (res.error) console.error('mark resolved failed', res.error);
+    });
   });
 
   function refreshQueue(){
-    return window.storage.list(QKEY_PREFIX, true).catch(function(){ return null; }).then(function(listRes){
-      var keys = (listRes && listRes.keys) || [];
-      var newKeys = keys.filter(function(k){ return !(k in qCache); });
-      var fetches = newKeys.map(function(k){
-        return window.storage.get(k, true).then(function(r){
-          if (r && r.value){
-            try { qCache[k] = Object.assign({ id: k }, JSON.parse(r.value)); } catch(e){}
-          }
-        }).catch(function(e){ console.error('get failed for', k, e); });
-      });
-      return Promise.all(fetches).then(function(){
-        Object.keys(qCache).forEach(function(k){
-          if (keys.indexOf(k) === -1) delete qCache[k];
-        });
-        renderQueue();
-      });
+    return sb.from(SQ_TABLE).select('*').then(function(res){
+      if (res.error){ console.error('refresh failed', res.error); return; }
+      qCache = {};
+      (res.data || []).forEach(function(row){ qCache[row.id] = row; });
+      renderQueue();
     });
   }
 
   function renderCard(q){
-    var badgeClass = q.category === 'peopleshr' ? 'peopleshr' : 'panelist';
-    var badgeLabel = trackLabel(q.category);
     return '' +
-      '<div class="qcard' + (q.answered ? ' answered' : '') + '">' +
+      '<div class="qcard' + (q.resolved ? ' answered' : '') + '">' +
         '<div class="qcard-top">' +
           '<div class="qcard-meta">' +
-            '<span class="qcard-ticket">Q-' + String(q.ticket).padStart(4, '0') + '</span>' +
-            '<span>' + timeAgo(q.ts) + '</span>' +
+            '<span class="qcard-ref">REQ-' + String(q.id).padStart(4, '0') + '</span>' +
+            '<span>·</span>' +
+            '<span>' + timeAgo(new Date(q.created_at).getTime()) + '</span>' +
           '</div>' +
-          '<span class="track-badge ' + badgeClass + '">' + badgeLabel + '</span>' +
         '</div>' +
-        '<div class="qcard-text">' + escapeHtml(q.text) + '</div>' +
+        '<div class="qcard-name">' + escapeHtml(q.full_name) + ' <span class="qcard-company">— ' + escapeHtml(q.company) + '</span></div>' +
+        '<a class="qcard-email" href="mailto:' + escapeHtml(q.email) + '">' + escapeHtml(q.email) + '</a>' +
+        '<div class="qcard-text">' + escapeHtml(q.question) + '</div>' +
         '<div class="qcard-bottom">' +
-          '<button class="mark-btn' + (q.answered ? ' done' : '') + '" data-id="' + q.id + '">' +
-            (q.answered ? '✓ Answered' : 'Mark answered') +
+          '<button class="mark-btn' + (q.resolved ? ' done' : '') + '" data-id="' + q.id + '">' +
+            (q.resolved ? '✓ Resolved' : 'Mark resolved') +
           '</button>' +
         '</div>' +
       '</div>';
@@ -788,15 +605,11 @@
 
   function renderQueue(){
     var items = Object.keys(qCache).map(function(k){ return qCache[k]; });
-    var counts = { all: items.length, panelist: 0, peopleshr: 0 };
-    items.forEach(function(q){ if (counts[q.category] !== undefined) counts[q.category]++; });
-    document.getElementById('count-all').textContent = '(' + counts.all + ')';
-    document.getElementById('count-panelist').textContent = '(' + counts.panelist + ')';
-    document.getElementById('count-peopleshr').textContent = '(' + counts.peopleshr + ')';
+    var openCount = items.filter(function(q){ return !q.resolved; }).length;
+    modCount.textContent = openCount + ' open · ' + items.length + ' total';
 
     var filtered = items.filter(function(q){
-      if (currentFilter !== 'all' && q.category !== currentFilter) return false;
-      if (hideAnswered && q.answered) return false;
+      if (hideAnswered && q.resolved) return false;
       return true;
     });
 
@@ -807,16 +620,16 @@
     }
     modEmpty.style.display = 'none';
 
-    // Unanswered questions stay on top (newest first); answered ones sink
+    // Unanswered questions stay on top (newest first); resolved ones sink
     // into their own section at the bottom, unhighlighted via .qcard.answered.
-    var unanswered = filtered.filter(function(q){ return !q.answered; })
-      .sort(function(a, b){ return b.ticket - a.ticket; });
-    var answered = filtered.filter(function(q){ return q.answered; })
-      .sort(function(a, b){ return b.ticket - a.ticket; });
+    var unanswered = filtered.filter(function(q){ return !q.resolved; })
+      .sort(function(a, b){ return b.id - a.id; });
+    var answered = filtered.filter(function(q){ return q.resolved; })
+      .sort(function(a, b){ return b.id - a.id; });
 
     var html = unanswered.map(renderCard).join('');
     if (answered.length){
-      html += '<div class="qlist-divider">Answered <span>(' + answered.length + ')</span></div>' +
+      html += '<div class="qlist-divider">Resolved <span>(' + answered.length + ')</span></div>' +
         answered.map(renderCard).join('');
     }
     qlist.innerHTML = html;
@@ -837,7 +650,7 @@
   if (params.get('mod') === '1' || params.get('moderator') === '1'){
     enterModFlow();
   } else {
-    showView('home');
+    showView('form');
   }
 })();
 </script>
