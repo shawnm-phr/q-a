@@ -233,11 +233,11 @@
         <label class="field-label" for="f-name">Full Name</label>
         <input type="text" id="f-name" autocomplete="name" placeholder="Jane Dela Cruz">
 
-        <label class="field-label" for="f-email">Email Address</label>
+        <label class="field-label" for="f-email">Company Email Address</label>
         <input type="email" id="f-email" autocomplete="email" inputmode="email" placeholder="jane@company.com">
 
         <label class="field-label" for="f-company">Company</label>
-        <input type="text" id="f-company" autocomplete="organization" placeholder="Acme Corp">
+        <input type="text" id="f-company" autocomplete="organization" placeholder="Company Name">
 
         <label class="field-label" for="f-text">Your Question</label>
         <textarea id="f-text" maxlength="500" placeholder="Type your question here…"></textarea>
@@ -348,6 +348,17 @@
   // to anyone who views this page's source, same as the anon key above.
   var PASSKEY = '1404';
   var EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  var PERSONAL_EMAIL_DOMAINS = [
+    'gmail.com', 'googlemail.com', 'yahoo.com', 'yahoo.co.uk', 'yahoo.co.in',
+    'ymail.com', 'rocketmail.com', 'outlook.com', 'hotmail.com', 'live.com',
+    'msn.com', 'icloud.com', 'me.com', 'mac.com', 'aol.com', 'protonmail.com',
+    'proton.me', 'gmx.com', 'gmx.net', 'mail.com', 'zoho.com', 'yandex.com',
+    'yandex.ru', 'qq.com', '163.com', '126.com'
+  ];
+  function isPersonalEmail(email){
+    var domain = email.split('@').pop().toLowerCase();
+    return PERSONAL_EMAIL_DOMAINS.indexOf(domain) !== -1;
+  }
   var qCache = {};
   var hideAnswered = false;
   var pollTimer = null;
@@ -433,6 +444,7 @@
 
     if (!name){ return { el: nameInput, message: 'Enter your full name.' }; }
     if (!email || !EMAIL_RE.test(email)){ return { el: emailInput, message: 'Enter a valid email address.' }; }
+    if (isPersonalEmail(email)){ return { el: emailInput, message: 'Use your company email address, not a personal one (e.g. Gmail, Yahoo, Outlook).' }; }
     if (!company){ return { el: companyInput, message: 'Enter your company.' }; }
     if (!text){ return { el: qText, message: 'Write your question before sending.' }; }
     return null;
